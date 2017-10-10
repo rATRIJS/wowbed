@@ -2,9 +2,13 @@ import { Provider, Endpoint } from "./provider";
 import * as request from "request-promise-native";
 import EndpointNotFoundError from "./errors/endpoint-not-found";
 import escapeRegexp = require("escape-string-regexp");
+import FormatNotImplementedError from "./errors/format-not-implemented";
 import InvalidProviderResponse from "./errors/invalid-provider-response";
+import InvalidProviderResponseStatusError from "./errors/invalid-provider-response-status";
 import providerImporter from "./provider-importer";
 import ProviderResponse from "./provider-response";
+import ResourceNotFoundError from "./errors/resource-not-found";
+import UnauthorizedError from "./errors/unauthorized";
 
 interface ClientOptions {
     providers?: Provider[];
@@ -59,11 +63,31 @@ class Client {
             delete options.maxHeight;
         }
 
-        return this.responseToProviderResponse(await request({
-            method: "GET",
-            uri: endpoint.url.replace("{format}", "json"),
-            qs: options,
-        }));
+        try {
+            return this.responseToProviderResponse(await request({
+                method: "GET",
+                uri: endpoint.url.replace("{format}", "json"),
+                qs: options,
+            }));
+        } catch (error) {
+            if (error.name === "StatusCodeError") {
+                switch (error.statusCode) {
+                    case 401:
+                        throw new UnauthorizedError("Access to resource denied.", error);
+
+                    case 404:
+                        throw new ResourceNotFoundError("Provider couldn't find the resource.", error);
+                    
+                    case 501:
+                        throw new FormatNotImplementedError("Provider doesn't support 'json' format.", error);
+                    
+                    default:
+                        throw new InvalidProviderResponseStatusError("Provider response had unsupported status.", error);
+                }
+            }
+
+            throw error;
+        }
     }
 
     public setProviders(providers: Provider[]): this {

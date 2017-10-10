@@ -1,11 +1,10 @@
-class EndpointNotFoundError extends Error {
-    constructor(message: string) {
-        super();
+import WowbedError from "./base";
 
-        Error.captureStackTrace(this, this.constructor);
+class EndpointNotFoundError extends WowbedError {
+    constructor(message: string) {
+        super(message);
 
         this.name = "EndpointNotFoundError";
-        this.message = message;
     }
 }
 
