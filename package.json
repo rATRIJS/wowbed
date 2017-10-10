@@ -15,12 +15,14 @@
   "devDependencies": {
     "@types/escape-string-regexp": "^0.0.31",
     "@types/request-promise-native": "^1.0.7",
+    "tslint": "^5.7.0",
     "typescript": "^2.5.3"
   },
   "optionalDependencies": {
     "oembed-providers": "^1.0.20170414"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "tslint -c tslint.json -p tsconfig.json"
   }
 }
