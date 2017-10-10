@@ -29,5 +29,5 @@ export default {
             .forEach((oembedProvider: Provider) => {
                 client.addProvider(oembedProvider);
             });
-    }
+    },
 };

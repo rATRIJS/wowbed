@@ -32,17 +32,18 @@ class Client {
     protected providers: Provider[];
 
     constructor(options: ClientOptions = {}) {
-        options = Object.assign({
+        options = {
             providers: [],
             importOembedProviders: true,
-        }, options);
+            ...options,
+        };
 
         this.setProviders(options.providers);
-        
+
         if (options.importOembedProviders) {
             providerImporter.import(
                 this,
-                Array.isArray(options.importOembedProviders) ? options.importOembedProviders : undefined
+                Array.isArray(options.importOembedProviders) ? options.importOembedProviders : undefined,
             );
         }
     }
@@ -77,12 +78,15 @@ class Client {
 
                     case 404:
                         throw new ResourceNotFoundError("Provider couldn't find the resource.", error);
-                    
+
                     case 501:
                         throw new FormatNotImplementedError("Provider doesn't support 'json' format.", error);
-                    
+
                     default:
-                        throw new InvalidProviderResponseStatusError("Provider response had unsupported status.", error);
+                        throw new InvalidProviderResponseStatusError(
+                            "Provider response had unsupported status.",
+                            error,
+                        );
                 }
             }
 
@@ -176,14 +180,14 @@ class Client {
         }
 
         for (const property of [
-            { "raw": "author_name", "converted": "authorName" },
-            { "raw": "author_url", "converted": "authorUrl" },
-            { "raw": "provider_name", "converted": "providerName" },
-            { "raw": "provider_url", "converted": "providerUrl" },
-            { "raw": "cache_age", "converted": "cacheAge" },
-            { "raw": "thumbnail_url", "converted": "thumbnailUrl" },
-            { "raw": "thumbnail_width", "converted": "thumbnailWidth" },
-            { "raw": "thumbnail_height", "converted": "thumbnailHeight" },
+            { raw: "author_name", converted: "authorName" },
+            { raw: "author_url", converted: "authorUrl" },
+            { raw: "provider_name", converted: "providerName" },
+            { raw: "provider_url", converted: "providerUrl" },
+            { raw: "cache_age", converted: "cacheAge" },
+            { raw: "thumbnail_url", converted: "thumbnailUrl" },
+            { raw: "thumbnail_width", converted: "thumbnailWidth" },
+            { raw: "thumbnail_height", converted: "thumbnailHeight" },
         ]) {
             if (response.hasOwnProperty(property.raw)) {
                 response[property.converted] = response[property.raw];
@@ -212,13 +216,13 @@ class Client {
     protected assertValidWithDimensionsProviderResponse(response: ProviderResponse): void {
         if (!response.width) {
             throw new InvalidProviderResponse(
-                `Provider response with type of '${response.type}' didn't include 'width' property.`
+                `Provider response with type of '${response.type}' didn't include 'width' property.`,
             );
         }
 
         if (!response.height) {
             throw new InvalidProviderResponse(
-                `Provider response with type of '${response.type}' didn't include 'height' property.`
+                `Provider response with type of '${response.type}' didn't include 'height' property.`,
             );
         }
     }
@@ -226,7 +230,7 @@ class Client {
     protected assertValidWithHtmlProviderResponse(response: ProviderResponse): void {
         if (!response.html) {
             throw new InvalidProviderResponse(
-                `Provider response with type of '${response.type}' didn't include 'html' property.`
+                `Provider response with type of '${response.type}' didn't include 'html' property.`,
             );
         }
     }
@@ -234,7 +238,7 @@ class Client {
     protected assertValidPhotoProviderResponse(response: ProviderResponse): void {
         if (!response.html) {
             throw new InvalidProviderResponse(
-                "Provider response with type of 'photo' didn't include 'url' property."
+                "Provider response with type of 'photo' didn't include 'url' property.",
             );
         }
     }
