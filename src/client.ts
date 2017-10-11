@@ -3,7 +3,7 @@ import * as request from "request-promise-native";
 import EndpointNotFoundError from "./errors/endpoint-not-found";
 import escapeRegexp = require("escape-string-regexp");
 import FormatNotImplementedError from "./errors/format-not-implemented";
-import InvalidProviderResponse from "./errors/invalid-provider-response";
+import InvalidProviderResponseError from "./errors/invalid-provider-response";
 import InvalidProviderResponseStatusError from "./errors/invalid-provider-response-status";
 import providerImporter from "./provider-importer";
 import ProviderResponse from "./provider-response";
@@ -162,7 +162,11 @@ class Client {
         try {
             response = JSON.parse(rawResponse);
         } catch (error) {
-            throw new InvalidProviderResponse("Provider response isn't valid JSON.");
+            throw new InvalidProviderResponseError("Provider response isn't valid JSON.");
+        }
+
+        if (typeof response !== "object") {
+            throw new InvalidProviderResponseError("Provider response isn't valid JSON.");
         }
 
         this.assertValidProviderResponse(response);
@@ -205,23 +209,23 @@ class Client {
 
     protected assertValidProviderResponse(response: RawProviderResponse): void {
         if (!response.type) {
-            throw new InvalidProviderResponse("Provider response didn't include 'type' property.");
+            throw new InvalidProviderResponseError("Provider response didn't include 'type' property.");
         }
 
         if (!response.version) {
-            throw new InvalidProviderResponse("Provider response didn't include 'version' property.");
+            throw new InvalidProviderResponseError("Provider response didn't include 'version' property.");
         }
     }
 
     protected assertValidWithDimensionsProviderResponse(response: ProviderResponse): void {
         if (!response.width) {
-            throw new InvalidProviderResponse(
+            throw new InvalidProviderResponseError(
                 `Provider response with type of '${response.type}' didn't include 'width' property.`,
             );
         }
 
         if (!response.height) {
-            throw new InvalidProviderResponse(
+            throw new InvalidProviderResponseError(
                 `Provider response with type of '${response.type}' didn't include 'height' property.`,
             );
         }
@@ -229,7 +233,7 @@ class Client {
 
     protected assertValidWithHtmlProviderResponse(response: ProviderResponse): void {
         if (!response.html) {
-            throw new InvalidProviderResponse(
+            throw new InvalidProviderResponseError(
                 `Provider response with type of '${response.type}' didn't include 'html' property.`,
             );
         }
@@ -237,7 +241,7 @@ class Client {
 
     protected assertValidPhotoProviderResponse(response: ProviderResponse): void {
         if (!response.html) {
-            throw new InvalidProviderResponse(
+            throw new InvalidProviderResponseError(
                 "Provider response with type of 'photo' didn't include 'url' property.",
             );
         }
