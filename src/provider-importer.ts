@@ -27,7 +27,7 @@ export default {
                 return providers.indexOf(oembedProvider.name) !== -1;
             })
             .forEach((oembedProvider: Provider) => {
-                client.addProvider(oembedProvider);
+                client.providers.push(oembedProvider);
             });
     },
 };

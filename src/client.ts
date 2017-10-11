@@ -29,7 +29,7 @@ interface RawProviderResponse {
 }
 
 class Client {
-    protected providers: Provider[];
+    public providers: Provider[];
 
     constructor(options: ClientOptions = {}) {
         options = {
@@ -38,7 +38,7 @@ class Client {
             ...options,
         };
 
-        this.setProviders(options.providers);
+        this.providers = options.providers;
 
         if (options.importOembedProviders) {
             providerImporter.import(
@@ -94,19 +94,7 @@ class Client {
         }
     }
 
-    public setProviders(providers: Provider[]): this {
-        this.providers = providers;
-
-        return this;
-    }
-
-    public addProvider(provider: Provider): this {
-        this.providers.push(provider);
-
-        return this;
-    }
-
-    public getEndpointByUrl(url: string): Endpoint {
+    protected getEndpointByUrl(url: string): Endpoint {
         try {
             return this.getEndpointMatchingScheme(url);
         } catch (error) {
