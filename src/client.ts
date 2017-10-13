@@ -236,6 +236,6 @@ class Client {
     }
 }
 
-export { Client };
+export { ClientOptions, FetchOptions, RawProviderResponse, Client };
 
 export default Client;
