@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "oEmbed consumer library for node.js.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/rATRIJS/wowbed",
   "author": "Rolands Atvars",
   "license": "MIT",
@@ -35,7 +36,8 @@
   "scripts": {
     "build": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
-    "test:file": "mocha -r ts-node/register"
+    "prepublish": "tslint -c tslint.json -p tsconfig.json",
+    "test:file": "mocha -r ts-node/register",
+    "test": "mocha -r ts-node/register test/**/*.test.ts"
   }
 }
