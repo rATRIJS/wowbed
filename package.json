@@ -1,6 +1,6 @@
 {
   "name": "wowbed",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "oEmbed consumer library for node.js.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,6 +8,7 @@
   "author": "Rolands Atvars",
   "license": "MIT",
   "private": false,
+  "keywords": [ "oembed", "typescript" ],
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "request": "^2.83.0",
